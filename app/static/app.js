@@ -183,8 +183,11 @@ async function refreshJobs() {
 
 function pollJobs() {
     refreshJobs();
-    setInterval(refreshJobs, 2000);
+    setInterval(refreshJobs, 1000);  // Poll every second for smoother progress updates
 }
+
+// Track simulated progress for jobs
+const simulatedProgress = {};
 
 function renderJobs(jobs) {
     if (!jobs || jobs.length === 0) {
@@ -197,12 +200,29 @@ function renderJobs(jobs) {
 
     jobQueue.innerHTML = jobs.map(job => {
         const icon = getStatusIcon(job.status);
+
+        // Simulate gradual progress for processing jobs
+        let displayProgress = job.progress;
+        if (job.status === 'processing') {
+            if (!simulatedProgress[job.id]) {
+                simulatedProgress[job.id] = { value: 0.05, startTime: Date.now() };
+            }
+            const sim = simulatedProgress[job.id];
+            const elapsed = (Date.now() - sim.startTime) / 1000;
+            // Slowly increase to ~90% over time (asymptotic approach)
+            sim.value = Math.min(0.9, 0.05 + (0.85 * (1 - Math.exp(-elapsed / 60))));
+            displayProgress = Math.max(job.progress, sim.value);
+        } else {
+            delete simulatedProgress[job.id];
+            if (job.status === 'completed') displayProgress = 1;
+        }
+
         const progress = job.status === 'processing' ? `
             <div class="job-progress">
                 <div class="progress-bar">
-                    <div class="progress-fill" style="width: ${job.progress * 100}%"></div>
+                    <div class="progress-fill" style="width: ${displayProgress * 100}%"></div>
                 </div>
-                <div class="progress-text">${Math.round(job.progress * 100)}%</div>
+                <div class="progress-text">${Math.round(displayProgress * 100)}%</div>
             </div>
         ` : '';
 

@@ -67,6 +67,7 @@ header h1 {
     padding: 0.5rem;
     border-radius: 8px;
     transition: background-color 0.2s;
+    color: var(--text-primary);
 }
 
 .icon-btn:hover {
@@ -330,8 +331,20 @@ header h1 {
 
 .progress-fill {
     height: 100%;
-    background-color: var(--accent);
+    background: linear-gradient(
+        90deg,
+        var(--accent) 0%,
+        var(--accent-hover) 50%,
+        var(--accent) 100%
+    );
+    background-size: 200% 100%;
+    animation: progress-pulse 1.5s ease-in-out infinite;
     transition: width 0.3s;
+}
+
+@keyframes progress-pulse {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
 }
 
 .progress-text {

@@ -1,3 +1,17 @@
+# Core transcription
 openai-whisper
 torch
 numpy<2
+
+# Web framework
+fastapi
+uvicorn[standard]
+python-multipart
+websockets
+
+# Folder watching
+watchdog
+
+# Utilities
+python-dotenv
+tqdm

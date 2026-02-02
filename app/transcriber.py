@@ -168,6 +168,11 @@ class WhisperTranscriber:
             "temperature": self.temperature,
             "fp16": self.device != "cpu",
             "task": "transcribe",
+            # Anti-hallucination settings
+            "condition_on_previous_text": False,  # Prevents repetition loops
+            "compression_ratio_threshold": 2.4,   # Filter out repetitive segments
+            "logprob_threshold": -1.0,            # Filter low-confidence outputs
+            "no_speech_threshold": 0.6,           # Better silence detection
         }
 
         if self.language:
